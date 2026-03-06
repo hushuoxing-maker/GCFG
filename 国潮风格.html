@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古月 · 国潮风商业门头 · 完整版AI提示词生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #4a2a3a;
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', '华文楷体', 'KaiTi', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #4a2a5a 0%, #6a3a4a 100%);
+        }
+
+        .generator-card {
+            max-width: 1600px;
+            width: 100%;
+            background: #fffaf5;
+            border-radius: 60px;
+            box-shadow: 0 30px 60px rgba(200,100,150,0.3);
+            overflow: hidden;
+            border: 3px solid #ffaa8a;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8a2a4a 0%, #c94a6a 100%);
+            padding: 28px 40px;
+            color: #ffffcc;
+            border-bottom: 6px solid #ffd966;
+            text-shadow: 2px 2px 0 #6a1a2a;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: #fff0b3;
+            font-weight: 400;
+            border-left: 4px solid #ffd966;
+            padding-left: 20px;
+        }
+
+        .main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .input-section {
+            flex: 1.2;
+            min-width: 420px;
+            background: #fffef9;
+            padding: 40px 35px;
+            border-right: 2px dashed #ffaa8a;
+        }
+
+        .input-section h2 {
+            font-size: 30px;
+            font-weight: 600;
+            color: #8a2a4a;
+            margin-bottom: 25px;
+            border-bottom: 4px dotted #ffd966;
+            padding-bottom: 15px;
+            text-shadow: 1px 1px 0 #ffaa8a;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+            color: #c94a6a;
+            margin-bottom: 6px;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 16px;
+            background: #fffdf5;
+            border: 3px solid #ffcfb0;
+            border-radius: 40px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #ff8a6a;
+            outline: none;
+            box-shadow: 0 0 0 5px rgba(255,138,106,0.2);
+        }
+
+        .input-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #8a2a4a 0%, #c94a6a 100%);
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffcc;
+            letter-spacing: 2px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 6px solid #ffd966;
+            margin-top: 20px;
+            text-shadow: 2px 2px 0 #6a1a2a;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(200,80,120,0.3);
+        }
+
+        .output-section {
+            flex: 2;
+            background: #fffaf5;
+            padding: 40px 35px;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .output-header h2 {
+            font-size: 30px;
+            font-weight: 600;
+            color: #8a2a4a;
+            text-shadow: 1px 1px 0 #ffaa8a;
+        }
+
+        .badge {
+            background: #ffd966;
+            color: #8a2a4a;
+            padding: 6px 22px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid #ff8a6a;
+        }
+
+        .prompts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .prompt-item {
+            background: #fffef5;
+            border: 3px solid #ffcfb0;
+            border-radius: 40px;
+            padding: 22px 25px;
+            transition: 0.2s;
+            position: relative;
+            box-shadow: 0 6px 0 #ffcfb0;
+        }
+
+        .prompt-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 0 #ff8a6a;
+            border-color: #ff8a6a;
+        }
+
+        .prompt-number {
+            font-size: 16px;
+            font-weight: 700;
+            color: #8a2a4a;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            background: #ffd966;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 40px;
+            border: 2px solid #ff8a6a;
+        }
+
+        .prompt-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #4a2a3a;
+            margin-bottom: 12px;
+            padding-right: 90px;
+        }
+
+        .copy-btn {
+            background: #ffd966;
+            color: #8a2a4a;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid #ff8a6a;
+            position: absolute;
+            bottom: 20px;
+            right: 25px;
+        }
+
+        .copy-btn:hover {
+            background: #ff8a6a;
+            color: white;
+            border-color: #ffd966;
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+            color: white;
+            border-color: #388e3c;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #c94a6a;
+            text-align: right;
+            border-top: 2px dashed #ffcfb0;
+            padding-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="generator-card">
+        <div class="header">
+            <h1>🐉 古月 · 国潮风商业门头 · 专业版 🐉</h1>
+            <p>白天正立面 · 潮流醒目 · 东方国潮 · 8K商业写实 · 100%可施工落地 · 20组设计不重复</p>
+        </div>
+
+        <div class="main">
+            <div class="input-section">
+                <h2>🎨 输入国潮门头设计需求</h2>
+                
+                <div class="input-group">
+                    <label>🏪 行业类型</label>
+                    <input type="text" id="industry" value="火锅店" placeholder="例：火锅店 / 奶茶店 / 潮牌店 / 烧烤店">
+                </div>
+
+                <div class="input-group">
+                    <label>🏷️ 品牌店名 (可选)</label>
+                    <input type="text" id="brand" value="辣焰江湖" placeholder="例：辣焰江湖">
+                </div>
+
+                <div class="input-group">
+                    <label>📋 主营品类 (可选)</label>
+                    <input type="text" id="category" value="重庆老火锅" placeholder="例：重庆老火锅">
+                </div>
+
+                <div class="input-group">
+                    <label>💬 国潮标语 (可选)</label>
+                    <input type="text" id="slogan" value="沸腾你的胃" placeholder="例：沸腾你的胃">
+                </div>
+
+                <div class="input-group">
+                    <label>🔧 其他具体需求 (可选)</label>
+                    <textarea id="extra" rows="2" placeholder="例：红色为主、金色点缀、祥云图案等"></textarea>
+                </div>
+
+                <button class="generate-btn" id="generateBtn">⚡ 生成 20 组国潮门头提示词 ⚡</button>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="output-header">
+                    <h2>🎯 20组正立面国潮门头</h2>
+                    <span class="badge" id="countDisplay">0 / 20</span>
+                </div>
+                <div class="prompts-grid" id="promptsList">
+                    <div class="prompt-item" style="background: #fff5f0; text-align: center; padding: 40px;">
+                        <div class="prompt-number">🐉 点击生成</div>
+                        <div class="prompt-text" style="color: #c94a6a;">将显示20组国潮门头AI提示词</div>
+                    </div>
+                </div>
+                <div class="footer-note">
+                    ⚡ 每组均为完整描述 · 白天正立面 · 8K写实 · 可直接复制用于即梦AI
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const industryInput = document.getElementById('industry');
+            const brandInput = document.getElementById('brand');
+            const categoryInput = document.getElementById('category');
+            const sloganInput = document.getElementById('slogan');
+            const extraInput = document.getElementById('extra');
+            const generateBtn = document.getElementById('generateBtn');
+            const promptsListDiv = document.getElementById('promptsList');
+            const countDisplay = document.getElementById('countDisplay');
+
+            function setLoading() {
+                promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fff5f0; text-align: center; padding: 40px;"><div class="prompt-number">🐉 ⏳</div><div class="prompt-text" style="color: #c94a6a;">正在生成20组国潮门头提示词...</div></div>`;
+                countDisplay.innerText = '0 / 20';
+            }
+
+            function setupCopyButtons() {
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        const promptText = this.getAttribute('data-prompt');
+                        navigator.clipboard.writeText(promptText).then(() => {
+                            const originalText = this.innerHTML;
+                            this.innerHTML = '✓ 已复制';
+                            this.classList.add('copied');
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.classList.remove('copied');
+                            }, 2000);
+                        }).catch(() => alert('复制失败'));
+                    });
+                });
+            }
+
+            function generatePrompts(industry, brand, category, slogan, extra) {
+                const prompts = [];
+                
+                // 品牌名备选
+                const brandFallback = brand.trim() || (() => {
+                    const map = {
+                        '火锅店': '辣焰江湖',
+                        '奶茶店': '茶颜光年',
+                        '潮牌店': '潮玩引力',
+                        '烧烤店': '碳烤人生'
+                    };
+                    return map[industry] || '国潮当道';
+                })();
+                
+                // 主营品类备选
+                const categoryFallback = category.trim() || (() => {
+                    const map = {
+                        '火锅店': '重庆老火锅',
+                        '奶茶店': '鲜果奶茶',
+                        '潮牌店': '街头潮牌',
+                        '烧烤店': '炭火烤肉'
+                    };
+                    return map[industry] || '国潮风';
+                })();
+                
+                // 国潮标语备选
+                const sloganFallback = slogan.trim() || (() => {
+                    const list = ['沸腾你的胃', '此刻发光', '就要不一样', '上头', '绝绝子', '太上头了', '国潮当道', '潮人聚集地', '排队王', '打卡圣地'];
+                    return list[Math.floor(Math.random() * list.length)];
+                })();
+
+                // 烤漆板颜色组合 (国潮常用色)
+                const plateColors = [
+                    '中国红烤漆板', '朱砂红烤漆板', '枣红色烤漆板', '酒红色烤漆板', '胭脂红烤漆板',
+                    '帝王黄烤漆板', '明黄色烤漆板', '橘红色烤漆板', '赤金色烤漆板', '绛紫色烤漆板',
+                    '墨绿色烤漆板', '孔雀蓝烤漆板', '宝蓝色烤漆板', '松石绿烤漆板', '黛青色烤漆板',
+                    '中国红烤漆板', '朱砂红烤漆板', '枣红色烤漆板', '酒红色烤漆板', '胭脂红烤漆板'
+                ];
+
+                // 国潮图案装饰板
+                const patternDecors = [
+                    '祥云图案装饰板', '龙纹图案装饰板', '凤纹图案装饰板', '锦鲤图案装饰板', '牡丹图案装饰板',
+                    '山水图案装饰板', '脸谱图案装饰板', '书法汉字装饰板', '剪纸图案装饰板', '灯笼图案装饰板',
+                    '麒麟图案装饰板', '仙鹤图案装饰板', '莲花图案装饰板', '如意纹装饰板', '铜钱纹装饰板',
+                    '回字纹装饰板', '云雷纹装饰板', '饕餮纹装饰板', '蟠螭纹装饰板', '龙凤呈祥装饰板'
+                ];
+
+                // 霓虹灯颜色
+                const neonColors = [
+                    '粉色霓虹灯', '红色霓虹灯', '橙色霓虹灯', '黄色霓虹灯', '绿色霓虹灯',
+                    '蓝色霓虹灯', '紫色霓虹灯', '玫红色霓虹灯', '金色霓虹灯', '彩色霓虹灯'
+                ];
+
+                // 不锈钢材质
+                const stainlessTypes = [
+                    '拉丝不锈钢', '镜面不锈钢', '黑色不锈钢', '钛金不锈钢', '玫瑰金不锈钢'
+                ];
+
+                for (let i = 0; i < 20; i++) {
+                    const plateColor = plateColors[i % plateColors.length];
+                    const pattern = patternDecors[i % patternDecors.length];
+                    const neonColor = neonColors[i % neonColors.length];
+                    const stainless = stainlessTypes[i % stainlessTypes.length];
+                    
+                    // 根据extra调整描述
+                    let extraDesc = '';
+                    if (extra) {
+                        extraDesc = `，${extra}风格`;
+                    }
+                    
+                    const prompt = `白天自然光下，某${industry}门头正立面完整展示，正面平视视角，无透视畸变无遮挡。门头为国潮风格，采用${plateColor}为基底，搭配${pattern}，${stainless}收边，${neonColor}勾勒轮廓，整体潮流醒目、东方国潮、强视觉冲击、年轻网红感${extraDesc}。品牌店名“${brandFallback}”搭配主营品类“${categoryFallback}”及国潮标语“${sloganFallback}”，粗体国潮字体，采用亚克力发光字和软膜灯箱组合。日间清晰霓虹灯带、强光发光字、氛围灯丰富。8K高清商业写实效果图，细节丰富色彩自然，可直接施工参考。`;
+                    
+                    prompts.push(prompt);
+                }
+                
+                return prompts;
+            }
+
+            function renderPrompts(prompts) {
+                if (!prompts || prompts.length === 0) {
+                    promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fff5f0; text-align: center; padding: 40px;"><div class="prompt-number">🐉 ⚠️</div><div class="prompt-text" style="color: #c94a6a;">生成失败，请重试</div></div>`;
+                    countDisplay.innerText = '0 / 20';
+                    return;
+                }
+
+                let html = '';
+                prompts.forEach((prompt, idx) => {
+                    const escapedPrompt = prompt.replace(/"/g, '&quot;');
+                    html += `
+                        <div class="prompt-item">
+                            <div class="prompt-number">🐉 第 ${idx+1} 组 · 正立面国潮门头</div>
+                            <div class="prompt-text">${prompt}</div>
+                            <button class="copy-btn" data-prompt="${escapedPrompt}">📋 复制</button>
+                        </div>
+                    `;
+                });
+                
+                promptsListDiv.innerHTML = html;
+                countDisplay.innerText = `${prompts.length} / 20`;
+                setupCopyButtons();
+            }
+
+            function handleGenerate() {
+                const industry = industryInput.value.trim();
+                const brand = brandInput.value.trim();
+                const category = categoryInput.value.trim();
+                const slogan = sloganInput.value.trim();
+                const extra = extraInput.value.trim();
+                
+                if (!industry) {
+                    alert('请输入行业类型');
+                    return;
+                }
+                
+                setLoading();
+                setTimeout(() => {
+                    try {
+                        const prompts = generatePrompts(industry, brand, category, slogan, extra);
+                        renderPrompts(prompts);
+                    } catch (e) {
+                        console.error(e);
+                        promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fff5f0; text-align: center; padding: 40px;"><div class="prompt-number">🐉 ❌</div><div class="prompt-text" style="color: #c94a6a;">生成出错</div></div>`;
+                        countDisplay.innerText = '0 / 20';
+                    }
+                }, 150);
+            }
+
+            generateBtn.addEventListener('click', handleGenerate);
+            
+            // 默认示例
+            window.addEventListener('load', () => {
+                industryInput.value = '火锅店';
+                brandInput.value = '辣焰江湖';
+                categoryInput.value = '重庆老火锅';
+                sloganInput.value = '沸腾你的胃';
+                extraInput.value = '红色为主、金色点缀、祥云图案';
+                setTimeout(handleGenerate, 200);
+            });
+        })();
+    </script>
+</body>
+</html>
